@@ -63,11 +63,12 @@ But it will be invalidated after a user is idle/offline for 36 hours. (*TIMEOUT_
 
 If a user is online, every hour the session-tokens are rotated and the idle-timeout is reset. (*TIMEOUT_SESSION_ROTATE*)
 
-### Additional
+### Additional features
 
 * Logout
 * Delete account (*only API*)
 * User-Status
+* Expired sessions & tokens are auto-cleaned
 
 ### Security considerations
 
