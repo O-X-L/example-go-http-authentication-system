@@ -1,0 +1,9 @@
+/build/
+/frontend/client/package-lock.json
+/frontend/client/node_modules/
+# committed only for demo-purposes:
+# /frontend/server/files/build/
+/frontend/client/shadcn/
+/frontend/client/.svelte-kit/
+/frontend/tmp/
+/tmp/
