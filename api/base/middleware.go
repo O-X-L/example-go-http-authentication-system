@@ -157,11 +157,7 @@ func AuthMiddleware(store *db.DataStore, v *validator.Validate, next http.Handle
 // CORSMiddleware adds CORS response-headers that are required by the frontend.
 func CORSMiddleware(next http.Handler) http.HandlerFunc {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if config.IsDeploymentProduction() {
-			w.Header().Set("Access-Control-Allow-Origin", config.DOMAIN_PROD_FE)
-		} else {
-			w.Header().Set("Access-Control-Allow-Origin", config.DOMAIN_DEV_FE)
-		}
+        w.Header().Set("Access-Control-Allow-Origin", config.GetDomainFE())
 		w.Header().Set("Access-Control-Allow-Credentials", "true")
 		w.Header().Set("Access-Control-Allow-Headers", "Content-Type, X-CSRF-Token, X-CSRF-Token-Guest")
 		w.Header().Set("Access-Control-Allow-Methods", "GET, POST, DELETE, OPTIONS")

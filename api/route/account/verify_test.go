@@ -169,3 +169,40 @@ func TestHandleVerifyResend_Error(t *testing.T) {
 		t.Errorf("expected status InternalServerError, got %v", status)
 	}
 }
+
+func TestHandleVerify_PasswordReset(t *testing.T) {
+	tokenDeleted := false
+
+	mockAuth := &db.TestMockAuthStore{
+		GetVerificationTokenFunc: func(tokenID string) (int, int, string, time.Time, error) {
+			return 1, db.VERIFICATION_LINK_USAGE_PASSWORD_RESET, "validtoken123456789012345678901234567890123", time.Now().Add(1 * time.Hour), nil
+		},
+		DeleteVerificationTokenFunc: func(tokenID string) error {
+			tokenDeleted = true
+			return nil
+		},
+	}
+
+	store := &db.DataStore{Auth: mockAuth}
+	v := validator.New()
+	handler := HandleVerify(store, v)
+
+	body := VerifyRequest{
+		TokenID: "validid123456789012345678901234567890123456",
+		Token:   "validtoken123456789012345678901234567890123",
+	}
+	jsonBody, _ := json.Marshal(body)
+
+	req, _ := http.NewRequest("POST", "/a/verify", bytes.NewBuffer(jsonBody))
+	rr := httptest.NewRecorder()
+	handler.ServeHTTP(rr, req)
+
+	if status := rr.Code; status != http.StatusOK {
+		t.Errorf("expected status OK, got %v", status)
+	}
+
+	// For password resets, the token MUST NOT be deleted during the HandleVerify stage
+	if tokenDeleted {
+		t.Errorf("expected token NOT to be deleted for password reset pre-verification")
+	}
+}

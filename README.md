@@ -17,6 +17,8 @@
 
   * Including E-Mail verification link (*send per email to user*)
 
+  * Option for password reset
+
 * Via Google OAuth
 
   * GDPR: Google resources are only loaded if the user wants to
@@ -28,7 +30,7 @@
 * Generic system for verification-link that can easily be extended
 
   * Implemented: Email-Verification
-  * Soon to be implemented: Password reset
+  * Implemented: Password Reset
   * Possible: Passwordless login
   * Possible: Account-deletion verification
   * Possible: 2FA
@@ -74,7 +76,7 @@ If a user is online, every hour the session-tokens are rotated and the idle-time
 
 * Authentication-checks are done using a middleware.
 * Passwords are hashed using Argon2 + a server-specific Pepper.
-  * If the pepper would change - all passwords would mismatch!
+  * Warning: If the pepper is changed - all passwords will mismatch!
 * Random tokens for sessions etc. are `32 byte/43 char base64`
 * All User-inputs to the API are validated using [go-validator](github.com/go-playground/validator)
 * As a simple anti-bot measure `Guest-Session` are required for login & register actions.
@@ -85,7 +87,11 @@ If a user is online, every hour the session-tokens are rotated and the idle-time
 * Timeout for verification-tokens. (*default: 1h*)
 * Rate-limit for resending verification-tokens. (*VERIFICATION_LINK_MAX_RESEND | default: 2*)
 * Content-Security-Policy is set.
-* The maximum active sessions of an user are limited. (*MAX_CONCURRENT_SESSIONS | default: 5*)
+* The maximum active sessions of users are limited. (*MAX_CONCURRENT_SESSIONS | default: 5*)
+
+**Notes**:
+
+* You should implement rate-limits (*via reverse-proxy*) for some API-endpoints to make abuse harder
 
 ----
 

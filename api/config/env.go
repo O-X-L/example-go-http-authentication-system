@@ -46,3 +46,10 @@ func IsDeploymentProduction() bool {
 func GetGoogleOAuthClientID() string {
 	return os.Getenv(ENV_GOOGLE_OAUTH_CLIENT_ID)
 }
+
+func GetDomainFE() string {
+	if IsDeploymentProduction() {
+		return DOMAIN_PROD_FE
+	}
+	return DOMAIN_DEV_FE
+}

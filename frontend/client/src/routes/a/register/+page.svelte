@@ -52,8 +52,8 @@
         document.head.appendChild(script);
     }
 
-	async function handleRegisterBasic(e: Event) {
-		e.preventDefault();
+    async function handleRegisterBasic(e?: Event) {
+        if (e) e.preventDefault();
 		loading = true;
 		errorMessage = '';
 
@@ -137,11 +137,13 @@
 		<Card.Content class="grid gap-4">
 			<div class="grid gap-2">
 				<Label for="email">Email</Label>
-				<Input id="email" type="email" bind:value={email} required />
+				<Input id="email" type="email" bind:value={email} required
+					onkeydown={(e: KeyboardEvent) => e.key === 'Enter' && handleRegisterBasic(e)} />
 			</div>
 			<div class="grid gap-2">
 				<Label for="password">Password</Label>
-				<Input id="password" type="password" bind:value={password} required />
+				<Input id="password" type="password" bind:value={password} required
+					onkeydown={(e: KeyboardEvent) => e.key === 'Enter' && handleRegisterBasic(e)} />
 			</div>
 			<div class="grid gap-2">
 				<Button variant="default" class="w-full" onclick={handleRegisterBasic}>Register</Button>

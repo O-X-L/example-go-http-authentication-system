@@ -75,4 +75,20 @@ func (s *Server) setupRoutes() {
 			account.HandleStatus(s.DataStore),
 		),
 	)
+	s.Mux.HandleFunc(
+		"POST /a/password_reset/request",
+		GuestMiddleware(
+			s.DataStore,
+			s.Validator,
+			account.HandlePasswordResetRequest(s.DataStore, s.Validator),
+		),
+	)
+	s.Mux.HandleFunc(
+		"POST /a/password_reset/confirm",
+		GuestMiddleware(
+			s.DataStore,
+			s.Validator,
+			account.HandlePasswordResetConfirm(s.DataStore, s.Validator),
+		),
+	)
 }

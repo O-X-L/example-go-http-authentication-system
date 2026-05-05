@@ -16,15 +16,17 @@ type TestMockAuthStore struct {
 	RotateSessionFunc              func(sessionOld, sessionNew AuthSession) error
 	EnforceSessionPerUserLimitFunc func(userID int) error
 
-	AddUserBasicFunc        func(email, passwordHash string) error
-	AddUserOAuthFunc        func(email string, providerID int) error
-	GetUserByIDFunc         func(userID int, details bool) (AuthUser, error)
-	GetUserByEmailFunc      func(email string, details bool) (AuthUser, error)
-	DeleteUserFunc          func(userID int) error
-	IsUserActiveFunc        func(userID int) (bool, error)
-	IsUserEmailVerifiedFunc func(userID int) (bool, error)
-	RegisterUserLogonFunc   func(userID, authType, deviceType int, deviceInfo string) error
-	GetLastUserLogonFunc    func(userID int) (time.Time, int, int, string, error)
+	AddUserBasicFunc          func(email, passwordHash string) error
+	AddUserOAuthFunc          func(email string, providerID int) error
+	GetUserByIDFunc           func(userID int, details bool) (AuthUser, error)
+	GetUserByEmailFunc        func(email string, details bool) (AuthUser, error)
+	DeleteUserFunc            func(userID int) error
+	IsUserActiveFunc          func(userID int) (bool, error)
+	IsUserEmailVerifiedFunc   func(userID int) (bool, error)
+	RegisterUserLogonFunc     func(userID, authType, deviceType int, deviceInfo string) error
+	GetLastUserLogonFunc      func(userID int) (time.Time, int, int, string, error)
+	UpdateUserPasswordFunc    func(userID int, passwordHash string) error
+	DeleteAllUserSessionsFunc func(userID int) error
 
 	AddVerificationTokenFunc            func(userID, usageID int, tokenID, token string) error
 	GetVerificationTokenFunc            func(tokenID string) (int, int, string, time.Time, error)
@@ -150,6 +152,20 @@ func (m *TestMockAuthStore) GetLastUserLogon(userID int) (time.Time, int, int, s
 		return m.GetLastUserLogonFunc(userID)
 	}
 	return time.Time{}, 0, 0, "", nil
+}
+
+func (m *TestMockAuthStore) UpdateUserPassword(userID int, passwordHash string) error {
+	if m.UpdateUserPasswordFunc != nil {
+		return m.UpdateUserPasswordFunc(userID, passwordHash)
+	}
+	return nil
+}
+
+func (m *TestMockAuthStore) DeleteAllUserSessions(userID int) error {
+	if m.DeleteAllUserSessionsFunc != nil {
+		return m.DeleteAllUserSessionsFunc(userID)
+	}
+	return nil
 }
 
 func (m *TestMockAuthStore) AddVerificationToken(userID, usageID int, tokenID, token string) error {

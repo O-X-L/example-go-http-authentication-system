@@ -130,7 +130,7 @@
 <div class="min-h-screen bg-background font-sans antialiased">
 	<header class="border-b bg-card text-card-foreground shadow-sm">
 		<div class="container mx-auto flex h-16 items-center justify-between px-4">
-			<a href="/" class="text-xl font-bold tracking-tight">JADA - Just another Dating App</a>
+			<a href="/" class="text-xl font-bold tracking-tight">Example App</a>
 			<nav class="flex items-center gap-4">
 				{#if authState.isLoggedIn}
 					<Button variant="ghost" onclick={handleLogout}>Logout</Button>

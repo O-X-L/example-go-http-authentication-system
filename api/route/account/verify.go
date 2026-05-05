@@ -37,22 +37,24 @@ func HandleVerify(store *db.DataStore, v *validator.Validate) http.HandlerFunc {
 
 		userID, usageID, dbToken, expiresAt, err := store.Auth.GetVerificationToken(req.TokenID)
 		if err != nil || dbToken == "" {
-			http.Error(w, "Internal server error", http.StatusInternalServerError)
+			http.Error(w, "Invalid or expired token", http.StatusInternalServerError)
 			return
 		}
 
 		valid := account_util.IsValidVerificationToken(req.Token, dbToken, expiresAt)
 		if !valid {
-			http.Error(w, "Token mismatch or expired", http.StatusUnauthorized)
+			http.Error(w, "Invalid or expired token", http.StatusUnauthorized)
 			return
 		}
 
 		if usageID == db.VERIFICATION_LINK_USAGE_VERIFY_EMAIL {
 			store.Auth.SetVerificationDoneUserEmail(userID)
 		}
-		// todo: password_reset
 
-		store.Auth.DeleteVerificationToken(req.TokenID)
+		if usageID != db.VERIFICATION_LINK_USAGE_PASSWORD_RESET {
+			// password-reset requires the token twice
+			store.Auth.DeleteVerificationToken(req.TokenID)
+		}
 
 		w.Header().Set("Content-Type", "application/json")
 		json.NewEncoder(w).Encode(types.MessageResponse{
@@ -66,7 +68,8 @@ type VerifyResendRequest struct {
 }
 
 var MAPPING_RESEND_USAGE = map[string]int{
-	"email": db.VERIFICATION_LINK_USAGE_VERIFY_EMAIL,
+	"email":          db.VERIFICATION_LINK_USAGE_VERIFY_EMAIL,
+	"password_reset": db.VERIFICATION_LINK_USAGE_PASSWORD_RESET,
 }
 
 // HandleVerify godoc
@@ -105,9 +108,7 @@ func HandleVerifyResend(store *db.DataStore, v *validator.Validate) http.Handler
 			return
 		}
 
-		if usageID == db.VERIFICATION_LINK_USAGE_VERIFY_EMAIL {
-			go account_util.SendEmailVerificationTokenPerEmail(tokenID, token, &user)
-		}
+		go account_util.SendEmailVerificationTokenPerEmail(tokenID, token, &user, usageID)
 
 		w.Header().Set("Content-Type", "application/json")
 		json.NewEncoder(w).Encode(types.MessageResponse{

@@ -364,3 +364,44 @@ func TestDefaultAuthStore_DeleteUser(t *testing.T) {
 		t.Errorf("unfulfilled database expectations: %s", err)
 	}
 }
+
+func TestDefaultAuthStore_UpdateUserPassword(t *testing.T) {
+	store, mock, teardown := setupAuthStore(t)
+	defer teardown()
+
+	userID := 123
+	newHash := "new-argon2-password-hash"
+
+	mock.ExpectExec(`UPDATE users SET password_hash = \$1 WHERE id = \$2`).
+		WithArgs(newHash, userID).
+		WillReturnResult(sqlmock.NewResult(0, 1))
+
+	err := store.UpdateUserPassword(userID, newHash)
+	if err != nil {
+		t.Errorf("unexpected error: %v", err)
+	}
+
+	if err := mock.ExpectationsWereMet(); err != nil {
+		t.Errorf("unfulfilled database expectations: %s", err)
+	}
+}
+
+func TestDefaultAuthStore_DeleteAllUserSessions(t *testing.T) {
+	store, mock, teardown := setupAuthStore(t)
+	defer teardown()
+
+	userID := 123
+
+	mock.ExpectExec(`DELETE FROM sessions WHERE user_id = \$1`).
+		WithArgs(userID).
+		WillReturnResult(sqlmock.NewResult(0, 3)) // Simulating 3 deleted sessions
+
+	err := store.DeleteAllUserSessions(userID)
+	if err != nil {
+		t.Errorf("unexpected error: %v", err)
+	}
+
+	if err := mock.ExpectationsWereMet(); err != nil {
+		t.Errorf("unfulfilled database expectations: %s", err)
+	}
+}

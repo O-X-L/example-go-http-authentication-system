@@ -7,6 +7,8 @@ interface ConfigAPILocationType {
     AccountStatus: string
     Verify: string
     VerifyEmailResend: string
+    PasswordResetRequest: string
+    PasswordResetConfirm: string
 }
 
 interface ConfigStorageKeysType {
@@ -37,6 +39,8 @@ function getConfig(): ConfigType {
             AccountStatus: '/a/status',
             Verify: '/a/verify',
             VerifyEmailResend: '/a/verify_resend',
+            PasswordResetRequest: '/a/password_reset/request',
+            PasswordResetConfirm: '/a/password_reset/confirm',
         },
         GoogleOAuthClientID: 'xxx.apps.googleusercontent.com',
         StorageKeys: {

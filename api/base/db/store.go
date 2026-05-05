@@ -28,6 +28,8 @@ type AuthStore interface {
 	IsUserEmailVerified(userID int) (bool, error)
 	RegisterUserLogon(userID, authType, deviceType int, deviceInfo string) error
 	GetLastUserLogon(userID int) (time.Time, int, int, string, error)
+	UpdateUserPassword(userID int, passwordHash string) error
+	DeleteAllUserSessions(userID int) error
 
 	AddVerificationToken(userID, usageID int, tokenID, token string) error
 	GetVerificationToken(tokenID string) (int, int, string, time.Time, error)

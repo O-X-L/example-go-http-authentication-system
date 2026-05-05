@@ -56,9 +56,9 @@
         document.head.appendChild(script);
     }
 
-	async function handleLoginBasic(e: Event) {
-		e.preventDefault();
-		loading = true;
+    async function handleLoginBasic(e?: Event) {
+        if (e) e.preventDefault();
+        loading = true;
 		errorMessage = '';
 
 		try {
@@ -126,6 +126,10 @@
         if (redirectMsg == 'email_verified') {
             successTitle = 'Email verified successfully!';
             successMessage = 'Please login.';
+
+        } else if (redirectMsg == 'password_reset_success') {
+            successTitle = 'Password reset successful!';
+            successMessage = 'You can now log in with your new password.';
         }
 
         window.history.replaceState({}, '', '/a/login');
@@ -156,22 +160,28 @@
             <Card.Description>Enter your email below to login to your account.</Card.Description>
         </Card.Header>
         <Card.Content class="grid gap-4">
-
-			<div class="grid gap-2">
-				<Label for="email">Email</Label>
-				<Input id="email" type="email" placeholder="m@example.com" bind:value={email} required />
-			</div>
-			<div class="grid gap-2">
-				<Label for="password">Password</Label>
-				<Input id="password" type="password" bind:value={password} required />
-			</div>
-			<div class="grid gap-2">
-                <Button class="w-full" disabled={loading} onclick={handleLoginBasic}>
+            <div class="grid gap-2">
+                <Label for="email">Email</Label>
+                <Input id="email" type="email" placeholder="m@example.com" bind:value={email} required tabindex="1"
+                    onkeydown={(e: KeyboardEvent) => e.key === 'Enter' && handleLoginBasic(e)} />
+            </div>
+            <div class="grid gap-2">
+                <div class="flex items-center justify-between">
+                    <Label for="password">Password</Label>
+                    <a href="/a/password_reset" class="text-sm underline-offset-4 hover:underline text-muted-foreground" tabindex="4">
+                        Forgot password?
+                    </a>
+                </div>
+                <Input id="password" type="password" bind:value={password} required tabindex="2"
+                    onkeydown={(e: KeyboardEvent) => e.key === 'Enter' && handleLoginBasic(e)} />
+            </div>
+            <div class="grid gap-2">
+                <Button class="w-full" disabled={loading} onclick={handleLoginBasic} tabindex="3">
                     {loading ? "Logging in..." : "Login"}
                 </Button>
             </div>
 
-			<div class="px-6 pb-6">
+            <div class="px-6 pb-6">
 				<hr class="border-border" />
 			</div>
 

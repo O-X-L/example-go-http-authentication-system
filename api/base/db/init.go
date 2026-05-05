@@ -32,9 +32,9 @@ func InitDB() (*sql.DB, error) {
 	// making sure the user_id=0 is reserved
 	db.Exec(`
 		INSERT INTO users (id, email, password_hash, auth_type, active)
-		VALUES (0, "reserved@localhost", %s, 0, false)
+		VALUES (0, $1, $2, 0, false)
 		ON CONFLICT DO NOTHING`,
-		util.GenerateToken32(),
+		"reserved@localhost", util.GenerateToken32(),
 	)
 	log.Println("Database connection and tables verified.")
 	return db, nil

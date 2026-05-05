@@ -164,3 +164,13 @@ func (s *DefaultAuthStore) GetLastUserLogon(userID int) (time.Time, int, int, st
 	).Scan(&logonTime, &authType, &deviceType, &deviceInfo)
 	return logonTime, authType, deviceType, deviceInfo, err
 }
+
+func (s *DefaultAuthStore) UpdateUserPassword(userID int, passwordHash string) error {
+	_, err := s.DBConn.Exec("UPDATE users SET password_hash = $1 WHERE id = $2", passwordHash, userID)
+	return err
+}
+
+func (s *DefaultAuthStore) DeleteAllUserSessions(userID int) error {
+	_, err := s.DBConn.Exec("DELETE FROM sessions WHERE user_id = $1", userID)
+	return err
+}

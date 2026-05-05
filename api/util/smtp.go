@@ -65,7 +65,6 @@ func SendEmail(recipient string, subject string, bodyHTML string, bodyPlaintext 
 	return err
 }
 
-// SendRegistrationVerificationEmail sends an async verification email to the user.
 func SendRegistrationVerificationEmail(recipient string, verificationLink string) error {
 	if !config.IsDeploymentProduction() {
 		log.Printf("Sending registration-email to %s: %s", recipient, verificationLink)
@@ -76,5 +75,13 @@ func SendRegistrationVerificationEmail(recipient string, verificationLink string
 
 func SendRegistrationWelcomeEmail(recipient string) error {
 	subject, bodyHTML, bodyPlaintext := email_templates.GetRegistrationWelcomeEmailContentEN()
+	return SendEmail(recipient, subject, bodyHTML, bodyPlaintext)
+}
+
+func SendPasswordResetVerificationEmail(recipient string, verificationLink string) error {
+	if !config.IsDeploymentProduction() {
+		log.Printf("Sending password-reset-email to %s: %s", recipient, verificationLink)
+	}
+	subject, bodyHTML, bodyPlaintext := email_templates.GetPasswordResetVerificationEmailContentEN(verificationLink)
 	return SendEmail(recipient, subject, bodyHTML, bodyPlaintext)
 }

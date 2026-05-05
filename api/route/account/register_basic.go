@@ -54,7 +54,7 @@ func HandleRegister(store *db.DataStore, v *validator.Validate) http.HandlerFunc
 			if err != nil {
 				log.Printf("failed to create token for email-verification send: %v", err)
 			}
-			go account_util.SendEmailVerificationTokenPerEmail(verifyTokenID, verifyToken, &user)
+			go account_util.SendEmailVerificationTokenPerEmail(verifyTokenID, verifyToken, &user, db.VERIFICATION_LINK_USAGE_VERIFY_EMAIL)
 		}
 
 		err = performLogin(w, r, store, user.ID, db.AUTH_TYPE_BASIC)
