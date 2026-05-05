@@ -1,0 +1,1 @@
+import{a as e,o as t}from"./DRhtgfeJ.js";import"./v_jBEYI6.js";import{t as n}from"./j70Ws8XF.js";function r(r,i){let a=e(i,[`$$slots`,`$$events`,`$$legacy`]),o=[[`path`,{d:`M21.801 10A10 10 0 1 1 17 3.335`}],[`path`,{d:`m9 11 3 3L22 4`}]];n(r,t({name:`circle-check-big`},()=>a,{get iconNode(){return o}}))}export{r as t};
